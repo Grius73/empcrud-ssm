@@ -19,24 +19,38 @@ public class EmployeeService {
     EmployeeMapper employeeMapper;
 
     /**
-     * 获取所有员工信息
-     * @return
+     * @MethodName 获取所有员工信息
+     * @Author wudi
+     * @Description TODO
+     * @Date 2019/8/30
+     * @param
+     * @Return List<Employee>
      */
     public List<Employee> getAll(){
         return employeeMapper.selectByExampleWithDept(null);
     }
 
+
     /**
-     * 员工信息保存
+     * @MethodName saveEmp 员工信息保存
+     * @Author wudi
+     * @Description TODO
+     * @Date 2019/8/28
      * @param employee
+     * @Return
      */
     public void saveEmp(Employee employee) {
         employeeMapper.insertSelective(employee);
     }
 
+
     /**
-     * 批量删除
+     * @MethodName deleteBatch 批量删除
+     * @Author wudi
+     * @Description TODO
+     * @Date 2019/8/28
      * @param ids
+     * @Return
      */
     public void deleteBatch(List<Integer> ids) {
         EmployeeExample example = new EmployeeExample();
@@ -47,28 +61,37 @@ public class EmployeeService {
     }
 
     /**
-     * 员工删除
+     * @MethodName deleteEmp 员工单个删除
+     * @Author wudi
+     * @Description TODO
+     * @Date 2019/8/28
      * @param id
+     * @Return
      */
     public void deleteEmp(Integer id) {
         employeeMapper.deleteByPrimaryKey(id);
     }
 
+
     /**
-     * 员工信息更新
+     * @MethodName updateEmp 员工信息更新
+     * @Author wudi
+     * @Description TODO
+     * @Date 2019/8/28
      * @param employee
+     * @Return
      */
     public void updateEmp(Employee employee) {
         employeeMapper.updateByPrimaryKeySelective(employee);
     }
 
    /**
-    * @MethodName  getEmp
+    * @MethodName  getEmp 根据id获取用户
     * @Author wudi
     * @Description TODO
     * @Date 2019/8/29
     * @param id 用户id
-    * @Return
+    * @Return Employee
     */
 
     public Employee getEmp(Integer id) {
@@ -82,7 +105,7 @@ public class EmployeeService {
    * @Description TODO
    * @Date 2019/8/29
    * @param empName 用户名
-   * @Return
+   * @Return boolean
    */
 
     public boolean checkUser(String empName) {

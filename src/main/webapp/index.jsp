@@ -125,7 +125,7 @@
     <%--标题--%>
     <div class="row">
         <div class="clo-md-12">
-            <h1>SSM-CRUD</h1>
+            <h1>员工管理</h1>
         </div>
     </div>
     <%--新加删除按钮--%>
@@ -172,18 +172,17 @@
 </div>
 
 <script type="text/javascript">
-    //1、页面加载完成以后，直接去发送一个ajax请求，要到分页数据
+    //页面加载完成以后，入口函数
     $(function () {
-        //第一次去首页
         to_page(1);
     });
+    //跳转页面方法
     function to_page(pn) {
         $.ajax({
             url:"${APP_PATH}/emps/",
             data:"pn="+pn,
             type:"GET",
             success:function (result) {
-                //console.log(result);
                 //1、解析并显示员工信息
                 build_emps_table(result);
                 //2、解析并显示分页信息
@@ -240,7 +239,6 @@
         currentPage = result.extend.pageInfo.pageNum;
 
     }
-
     //解析构建分页条信息，点击进行跳转下一页
     function build_page_nav(result) {
         //page_nav_area
@@ -292,6 +290,7 @@
         var navEle = $("<nav></nav>").append(ul);
         navEle.appendTo("#page_nav_area");
     }
+    //清空表单方法
     function reset_form(ele){
         $(ele)[0].reset();
         $(ele).find("*").removeClass("has-error has-success");
@@ -316,8 +315,6 @@
             url:"${APP_PATH}/depts/",
             type:"GET",
             success:function (result) {
-               // console.log(result);
-                // $("#empAddModal select")
                 $.each(result.extend.depts,function () {
                     var optionEle = $("<option></option>").append(this.deptName).attr("value",this.deptId);
                     optionEle.appendTo(ele);
@@ -331,7 +328,6 @@
         var empName = $("#empName_add_input").val();
         var regName = /(^[a-zA-Z0-9_-]{4,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
         if (!regName.test(empName)) {
-            // alert("用户名为2-5中文或1-16英文数字组合");
             show_validate_msg("#empName_add_input","error","用户名为2-5中文或4-16英文数字组合");
             return false;
         }else {
@@ -341,7 +337,6 @@
         var email = $("#email_add_input").val();
         var regEmail = /^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
         if (!regEmail.test(email)) {
-            // alert("邮箱格式错误");
             show_validate_msg("#email_add_input","error","邮箱格式错误");
             return false;
         }else{
@@ -351,7 +346,6 @@
     }
     //显示校验提示
     function show_validate_msg(ele,status,msg){
-        //首先清空当前元素
         $(ele).parent().removeClass("has-success has-error");
         $(ele).next("span").text("");
         if ("success" == status) {
@@ -362,9 +356,9 @@
             $(ele).next("span").text(msg);
         }
     }
-    //校验用户名是否可用
+    //在输入框中校验用户名是否可用
     $("#empName_add_input").change(function () {
-        //发送ajax请求校验用户名是否可用
+        //校验用户名是否可用
         var empName = this.value;
         $.ajax({
             url:"${APP_PATH}/checkuser/",
@@ -381,18 +375,15 @@
             }
         })
     });
-
     //点击保存，保存员工
     $("#emp_save_btn").click(function () {
-        //1、模态框中填写的数据提交到服务器进行保存
+        //将模态框中填写的数据提交到服务器进行保存
         //1、先对提交给服务器的数据进行校验
         if (!validate_add_form()){
-            // console.log("===1==false===");
             return false
         }
         //1、判断之前的ajax用户名校验是否成功
         if ($(this).attr("ajax-va")=="error"){
-            // console.log("用户名判断校验错误");
             return false;
         }
         //2、发送ajax请求保存员工
@@ -401,7 +392,6 @@
             type:"POST",
             data:$("#empAddModal form").serialize(),
             success:function (result) {
-                // alert(result.msg);
                 if (result.code == 100) {
                     //员工保存成功
                     //1、关闭模态框
@@ -425,12 +415,8 @@
             }
         });
     });
-    //1）、我们是按钮创建之前就绑定了click，所以绑不上
-    //1）、可以在创建按钮的时候绑定事件
-    //2）、绑定点击.live()
-    //jquery新版没有live，使用on方法进行替代
+    //给编辑按钮绑事件
     $(document).on("click",".edit_btn",function () {
-        // alert("edit");
         //1、查出部门信息，显示部门列表
         getDepts("#empUpdateModal select");
         //2、查出员工信息，显示员工信息
@@ -441,12 +427,12 @@
             backdrop:"static"
         });
     });
+    //根据id查员工
     function getEmp(id) {
         $.ajax({
             url:"${APP_PATH}/emp/"+id,
             type:"GET",
             success:function (result) {
-                // console.log(result);
                 var empData = result.extend.emp;
                 $("#empName_update_static").text(empData.empName);
                 $("#email_update_input").val(empData.email);
@@ -467,15 +453,12 @@
         }else{
             show_validate_msg("#email_update_input","success","");
         }
-        console.log($("#empUpdateModal form").serialize());
         //2、发送ajax请求，保存更新员工信息
         $.ajax({
             url:"${APP_PATH}/emp/"+$(this).attr("edit_id"),
             type:"PUT",
             data:$("#empUpdateModal form").serialize(),
             success:function () {
-                // console.log(result);
-                // alert(result.msg);
                 $("#empUpdateModal").modal("hide");
                 to_page(currentPage);
             }
@@ -520,7 +503,7 @@
             //组织员工id字符串
             del_idstr += $(this).parents("tr").find("td:eq(1)").text()+"-";
         });
-        //去除empnames多月的","
+        //去除empames多余的","
         empNames = empNames.substring(0,empNames.length-1);
         //去除员工删除id多余的-
         del_idstr = del_idstr.substring(0,del_idstr.length-1);

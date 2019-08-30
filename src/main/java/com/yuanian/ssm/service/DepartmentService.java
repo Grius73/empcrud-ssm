@@ -16,6 +16,14 @@ import java.util.List;
 public class DepartmentService {
     @Autowired
     DepartmentMapper departmentMapper;
+    /**
+     * @MethodName
+     * @Author wudi
+     * @Description TODO
+     * @Date 2019/8/30
+     * @param null
+     * @Return List<Department>
+     */
     public List<Department> getDepts() {
         List<Department> list = departmentMapper.selectByExample(null);
         return list;
